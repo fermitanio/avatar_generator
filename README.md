@@ -1,2 +1,2 @@
 # avatargenerator
-Simple HTML program for drawing pixelated mosaics
+Simple HTML program for drawing pixelated mosaics.

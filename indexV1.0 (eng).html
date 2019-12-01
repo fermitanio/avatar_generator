@@ -1,0 +1,487 @@
+<head>
+<title>The Guille's question</title>
+
+<script>
+
+var span_height = 40;	// In pixels.
+var span_width = 40;	// In pixels.
+var spans_per_row = 7;
+var border_width = 3;	// In pixels.
+var sumOfLightsOn = spans_per_row * spans_per_row - 4;
+var sumOfLightsOff = 0;
+var movement = [];
+
+/**
+ * Centers a HTML tag conveniently.
+ *
+ * @author: Fernando Martín
+ * @param {object} tag Required. HTML element to be centered.
+ * @param {boolean} bOnBodyTag Required. Determines if the tag must be centered over the body element. If is set to true the tag is centered over the body tag. Otherwise: the parent tag is used if optional param is not given, or the given HTML element if optional param is specified.
+ * @param {object} [container_tag)] Optional. Tag's ancestor container used to center the tag.
+ */
+function centrar(tag, onBodyTag, container_tag) {
+
+	if (tag === undefined) {
+		throw new Error("Whoops!");
+		}
+
+	tag.style.position = onBodyTag ? "absolute" : "relative";
+	tag.style.top = "50%";
+	tag.style.left = "50%";
+	tag.style.margin = "-".concat(parseInt(tag.style.height) / 2, "px", " 0 0 -", parseInt(tag.style.width) / 2, "px");
+}
+
+function getSpansCruz(id) {
+    filaInt = id[0];
+    columnaInt = id[1];
+
+    filaInt--;
+    // columnaInt--;
+
+    idPrima = filaInt.concat(columnaInt);
+
+    var spans;
+    span = document.getElementById(object.id);
+
+        if (span.style.backgroundColor == 'yellow') {
+            span.style.backgroundColor ='black';
+        } else {
+            span.style.backgroundColor ='yellow';
+		}
+	}
+
+function modificar(objectId) {
+	
+	var objectIds = [];	// It's an array.
+	objectIds.push(objectId);
+	objectIds.push("".concat(parseInt(objectId[0]) - 1, objectId[1]));
+	objectIds.push("".concat(parseInt(objectId[0]) + 1, objectId[1]));
+	objectIds.push("".concat(objectId[0], parseInt(objectId[1]) - 1));
+	objectIds.push("".concat(objectId[0], parseInt(objectId[1]) + 1));
+	
+	var movement = [];	// It's an array.
+	movement.push(objectId);
+	
+	Array.from(objectIds).forEach((objectIdprime) => {
+		span = document.getElementById(objectIdprime);
+		if (span.style.backgroundColor == 'yellow') {
+			span.style.backgroundColor = 'black';
+		} else {
+			span.style.backgroundColor = 'yellow';
+		}
+	});
+  }
+
+function printSumOfLights() {
+	p = document.getElementById("cuenta_encen")
+	p.innerText = sumOfLightsOn.toString();
+
+	p = document.getElementById("cuenta_apag")
+	p.innerText = sumOfLightsOff.toString();
+}
+
+function setSumOfLights(objectId) {
+	
+	var objectIds = [];	// It's an array.
+	objectIds.push(objectId);
+	objectIds.push("".concat(parseInt(objectId[0]) - 1, objectId[1]));
+	objectIds.push("".concat(parseInt(objectId[0]) + 1, objectId[1]));
+	objectIds.push("".concat(objectId[0], parseInt(objectId[1]) - 1));
+	objectIds.push("".concat(objectId[0], parseInt(objectId[1]) + 1));
+	
+	// alert(objectIds);
+	
+	Array.from(objectIds).forEach((objectIdprime) => {
+		span = document.getElementById(objectIdprime);
+		if (span.style.backgroundColor == 'yellow') {
+			sumOfLightsOn++;
+			sumOfLightsOff--;
+		} else {
+			sumOfLightsOn--;
+			sumOfLightsOff++;
+		}
+	});
+  }
+
+function setBackgroundColor(sContainerId) {
+	
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	
+	Array.from(spans).forEach((span) => {
+
+		// Bombillas que no están en las esquinas (amarillas):
+		if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+			span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+			
+			span.style.backgroundColor = "yellow";
+		}
+		// Bombillas de las esquinas (serán blancas):
+		else {
+			span.style.backgroundColor = "white";
+		}
+	
+    });
+}
+
+function setClickEvent(sContainerId) {
+	
+	// Devuelve una colecci?n HTMLCollection.
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+		// Bombillas que no están en las esquinas (amarillas):
+		if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+			span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+			
+			// Las bombillas del interior de la habitación (pulsables):
+			if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString() && 
+			span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {
+				span.addEventListener("click", function() {
+					// event.preventDefault();
+					modificar(this.id);
+					setSumOfLights(this.id);
+					printSumOfLights();
+				});
+			}
+		}
+    });
+}
+
+function setEnterEvent(sContainerId) {
+	
+	// Devuelve una colecci?n HTMLCollection.
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+		// Bombillas que no están en las esquinas (amarillas):
+		if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+			span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+			
+			// Las bombillas del interior de la habitación (pulsables):
+			if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString() && 
+			span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {
+				span.addEventListener("keyup", function(event) {
+					event.preventDefault();
+					// modificar(this.id)
+					// setSumOfLights(this.id);
+					// printSumOfLights();
+				}, true);
+			}
+		}
+
+    });
+}
+
+// Diseño de los bordes de las etiquetas span.
+function setLightBorders(sContainerId) {
+
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+		// Bombillas que no están en las esquinas (amarillas):
+		if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+			span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+
+			// Límites superior e inferior de la habitación:
+			switch (parseInt(span.id[0])) {
+				
+				// Primera fila.
+				case 0:
+					span.style.border = border_width + "px solid #0000FF";
+					if (span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {	
+						span.style.borderBottom = border_width + "px solid orange";
+					}
+				break;
+				
+				// Segunda fila.
+				case 1:
+					span.style.border = border_width + "px solid #0000FF";
+					if (span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {	
+						span.style.borderTop = border_width + "px solid orange";
+					}
+				break;
+				
+				// Penúltima fila.
+				case spans_per_row - 2:
+					span.style.border = border_width + "px solid #0000FF";
+					if (span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {	
+						span.style.borderBottom = border_width + "px solid orange";
+					}
+				break;
+				
+				// Última fila.
+				case spans_per_row - 1:
+					span.style.border = border_width + "px solid #0000FF";
+					span.style.borderTop = border_width + "px solid orange";
+				break;
+				
+				//
+				default:
+					span.style.border = border_width + "px solid #0000FF";
+				break;
+			}
+
+			// Límites izdo. y dcho. de la habitación:
+			switch (parseInt(span.id[1])) {
+				
+				// Primera columna.
+				case 0:
+					if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString()) {	
+						span.style.borderRight = border_width + "px solid orange";
+					}
+				break;
+				
+				// Segunda columna.
+				case 1:
+					if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString()) {	
+						span.style.borderLeft = border_width + "px solid orange";
+					}
+				break;
+				
+				// Penúltima columna.
+				case spans_per_row - 2:
+					if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString()) {	
+						span.style.borderRight = border_width + "px solid orange";
+					}
+				break;
+				
+				// Última columna.
+				case spans_per_row - 1:
+					if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString()) {	
+						span.style.borderLeft = border_width + "px solid orange";
+					}
+				break;
+			}
+
+		}
+	});
+}
+
+function setLightSize(sContainerId, span_height, span_width) {
+	
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+		span.style.width = span_width.toString().concat("px");
+		span.style.height = span_height.toString().concat("px");
+    });
+}
+
+function setPointerStyle(sContainerId, sPointerStyle) {
+	
+	// Devuelve una colecci?n HTMLCollection.
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+	span.style.display = "inline-block";
+
+	// Bombillas que no están en las esquinas (amarillas):
+	if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+		span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+		
+		// Las bombillas del interior de la habitación (pulsables):
+		if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString() && 
+		span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {
+			span.style.cursor = sPointerStyle;
+			}
+		}
+	// Bombillas de las esquinas (serán blancas):
+	else {
+		span.style.border = border_width + "px solid white";
+		}
+    });
+}
+
+function setTransition(sContainerId, nTransition) {
+	
+	// Devuelve una colecci?n HTMLCollection.
+	var spans = document.querySelectorAll("div#" + sContainerId + " span");
+	Array.from(spans).forEach((span) => {
+
+	span.style.display = "inline-block";
+
+	// Bombillas que no están en las esquinas (amarillas):
+	if (span.id != "00" && span.id != "0".concat(spans_per_row - 1) &&
+		span.id != "".concat(spans_per_row - 1, "0") && span.id != "".concat(spans_per_row - 1, spans_per_row - 1)) {
+		
+		// Las bombillas del interior de la habitación (pulsables):
+		if (span.id[0] != "0" && span.id[0] != (spans_per_row - 1).toString() && 
+		span.id[1] != "0" && span.id[1] != (spans_per_row - 1).toString()) {
+			span.style.transition = nTransition.toString() + "s";
+			}
+		}
+    });
+}
+
+// file:///storage/0A88-26EA/index2.html
+    window.onload = function() {
+
+//
+// Diseño de las bombillas.
+//
+
+setLightSize("lugar", span_height, span_width);
+setBackgroundColor("lugar");
+setClickEvent("lugar");
+setEnterEvent("lugar");
+setTransition("lugar", 0.4) ;
+setPointerStyle("lugar", "pointer");
+setLightBorders("lugar");
+
+//
+// Diseño de las leyendas.
+//
+
+span = document.getElementById("leyenda_sup");
+span.style.border = "2px solid #0000FF";
+span.style.backgroundColor = "yellow";
+span.style.display = "inline-block";
+span.style.width = "20px"
+span.style.height = "20px"
+
+span = document.getElementById("leyenda_inf");
+span.style.border = "2px solid #0000FF";
+span.style.backgroundColor = "black";
+span.style.display = "inline-block";
+span.style.width = "20px"
+span.style.height = "20px"
+
+printSumOfLights();
+
+//
+// Formato de los párrafos.
+//
+
+var parragraphs = document.getElementsByTagName("p");
+Array.from(parragraphs).forEach((p) => {
+	p.style.margin = "0px";
+});
+
+// Capa que contiene a todas las demás.
+div = document.getElementById("fondo");
+div.style.width = (screen.width / 2).toString().concat("px");
+div.style.height = (screen.height / 2).toString().concat("px");
+centrar(div, true);
+
+// Capa que contiene las bombillas.
+div = document.getElementById("lugar");
+div.style.width = (spans_per_row * span_width + spans_per_row * border_width * 2).toString().concat("px");
+div.style.height = (spans_per_row * span_width + spans_per_row * border_width * 2).toString().concat("px");
+centrar(div, false);
+
+div = document.getElementById("cuenta_apag");
+// centrar(div, false);
+div = document.getElementById("cuenta_encen");
+// centrar(div, false);
+}
+
+</script>
+</head>
+
+<body style="background-color: white;">
+
+<div id="fondo" style="background-color: purple">
+
+	<div style="float: left; width: 33%; height: 100%; background-color: orange">
+
+		<div style="height: 50%;">
+			<div>
+				<br>
+				<p style="display: inline-block; font-family: Courier New; font-weight: bold; font-size: 1.5em">Lights <br>on</p> <span id="leyenda_sup"></span>
+				<br>
+				<br>
+				<p id="cuenta_encen" style="clear: both; text-align: right; font-family: Courier New; font-weight: bold; font-size: 2em"></p>
+			</div>
+		</div>
+
+		<div style="height: 50%;">
+			<br>
+			<p style="display: inline-block; font-family: Courier New; font-weight: bold; font-size: 1.5em">Lights <br>off</p> <span id="leyenda_inf"></span>
+			<br>
+			<br>
+			<p id="cuenta_apag" style="clear: both; text-align: right; font-family: Courier New; font-weight: bold; font-size: 2em"></p>
+		</div>
+
+	</div>
+
+	<div style="float: left; width: 66%; height: 100%; font-size:0px; background-color: pink;">
+
+		<div id="lugar">
+			<span id="00" class="esquina_sup"></span>
+			<span id="01"></span>
+			<span id="02"></span>
+			<span id="03"></span>
+			<span id="04"></span>
+			<span id="05"></span>
+			<span id="06" class="esquina_sup"></span>
+
+			</br>
+
+			<span id="10"></span>
+			<span id="11" class="superior izquierda"></span>
+			<span id="12" class="superior"></span>
+			<span id="13" class="superior"></span>
+			<span id="14" class="superior"></span>
+			<span id="15" class="superior"></span>
+			<span id="16" class="derecha"></span>
+
+			</br>
+
+			<span id="20"></span>
+			<span id="21"  class="izquierda"></span>
+			<span id="22"></span>
+			<span id="23"></span>
+			<span id="24"></span>
+			<span id="25"></span>
+			<span id="26" class="derecha"></span>
+
+			</br>
+
+			<span id="30"></span>
+			<span id="31" class="izquierda"></span>
+			<span id="32"></span>
+			<span id="33"></span>
+			<span id="34"></span>
+			<span id="35"></span>
+			<span id="36" class="derecha"></span>
+
+			</br>
+
+			<span id="40"></span>
+			<span id="41" class="izquierda"></span>
+			<span id="42"></span>
+			<span id="43"></span>
+			<span id="44"></span>
+			<span id="45"></span>
+			<span id="46" class="derecha"></span>
+
+			</br>
+
+			<span id="50"></span>
+			<span id="51" class="izquierda"></span>
+			<span id="52"></span>
+			<span id="53"></span>
+			<span id="54"></span>
+			<span id="55"></span>
+			<span id="56" class="derecha"></span>
+
+			</br>
+
+			<span id="60" class="esquina_inf"></span>
+			<span id="61" class="inferior"></span>
+			<span id="62" class="inferior"></span>
+			<span id="63" class="inferior"></span>
+			<span id="64" class="inferior"></span>
+			<span id="65" class="inferior"></span>
+			<span id="66" class="esquina_inf"></span>
+		</div>
+
+	</div>
+
+</div>
+
+</br>
+
+</body>
+
+</html>
